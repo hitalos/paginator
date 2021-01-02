@@ -46,17 +46,23 @@ func (p *Paginator) SetPagePath(path string) {
 
 // SetActualPage set number of actual page.
 func (p *Paginator) SetActualPage(n int) {
-	p.actualPage = n
+	if n > 0 {
+		p.actualPage = n
+	}
 }
 
 // SetPageLimit set limit of items in a page.
 func (p *Paginator) SetPageLimit(n int) {
-	p.pageLimit = n
+	if n > 0 {
+		p.pageLimit = n
+	}
 }
 
 // SetPageRange set range to show pages before and after of actual.
 func (p *Paginator) SetPageRange(n int) {
-	p.pageRange = n
+	if n > 0 {
+		p.pageRange = n
+	}
 }
 
 func (p *Paginator) calcPagesCount() int {
