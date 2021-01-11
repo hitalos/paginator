@@ -4,6 +4,11 @@ import (
 	"strconv"
 )
 
+const (
+	defaultRange = 5
+	defaultLimit = 10
+)
+
 type page struct {
 	Title  string `json:"title"`
 	Link   string `json:"link"`
@@ -25,8 +30,8 @@ type Paginator struct {
 func New(count int) Paginator {
 	return Paginator{
 		count:      count,
-		pageLimit:  10,
-		pageRange:  5,
+		pageLimit:  defaultLimit,
+		pageRange:  defaultRange,
 		prefixLink: "",
 		pagePath:   "page/",
 		actualPage: 1,
@@ -70,15 +75,18 @@ func (p *Paginator) calcPagesCount() int {
 	if p.count%p.pageLimit > 0 {
 		pagesCount++
 	}
+
 	return pagesCount
 }
 
 func (p *Paginator) addFirstAndPrevious() {
 	link := p.prefixLink
 	p.Pages = append(p.Pages, page{"≪", link, false})
+
 	if p.actualPage-1 != 1 {
 		link = p.prefixLink + p.pagePath + strconv.Itoa(p.actualPage-1)
 	}
+
 	p.Pages = append(p.Pages, page{"<", link, false})
 }
 
@@ -124,12 +132,13 @@ func (p Paginator) String() string {
 	html := "<ul>"
 	for _, pg := range p.Pages {
 		html += "<li"
+
 		if pg.Actual {
 			html += ` class="actual"`
 		}
+
 		html += `><a href="` + pg.Link + `">` + pg.Title + "</a></li>"
 	}
-	html += "</ul>"
 
-	return html
+	return html + "</ul>"
 }
