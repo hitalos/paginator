@@ -115,7 +115,7 @@ func (p *Paginator) Paginate() {
 		p.addFirstAndPrevious()
 	}
 
-	for i := p.actualPage - p.pageRange; i < p.actualPage+p.pageRange; i++ {
+	for i := p.actualPage - p.pageRange; i <= p.actualPage+p.pageRange; i++ {
 		if i < 1 || i > pagesCount {
 			continue
 		}
