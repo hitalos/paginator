@@ -129,7 +129,7 @@ func (p *Paginator) Paginate() {
 }
 
 func (p Paginator) String() string {
-	html := "<ul>"
+	html := `<ul class="paginator">`
 	for _, pg := range p.Pages {
 		html += "<li"
 
