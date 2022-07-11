@@ -1,7 +1,9 @@
 package paginator
 
 import (
+	"fmt"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -10,9 +12,9 @@ const (
 )
 
 type page struct {
-	Title  string `json:"title"`
-	Link   string `json:"link"`
-	Actual bool   `json:"actual"`
+	Title string `json:"title"`
+	Link  string `json:"link"`
+	Class string `json:"class"`
 }
 
 // Paginator struct to represents a list of pages.
@@ -81,13 +83,13 @@ func (p *Paginator) calcPagesCount() int {
 
 func (p *Paginator) addFirstAndPrevious() {
 	link := p.prefixLink
-	p.Pages = append(p.Pages, page{"⇤", link, false})
+	p.Pages = append(p.Pages, page{"⇤", link, "first"})
 
 	if p.actualPage-1 != 1 {
 		link = p.prefixLink + p.pagePath + strconv.Itoa(p.actualPage-1)
 	}
 
-	p.Pages = append(p.Pages, page{"←", link, false})
+	p.Pages = append(p.Pages, page{"←", link, "previous"})
 }
 
 func (p *Paginator) addLinkToPageNumber(n int) {
@@ -96,13 +98,17 @@ func (p *Paginator) addLinkToPageNumber(n int) {
 		link = p.prefixLink + p.pagePath + strconv.Itoa(n)
 	}
 
-	p.Pages = append(p.Pages, page{strconv.Itoa(n), link, p.actualPage == n})
+	class := ""
+	if p.actualPage == n {
+		class = "actual"
+	}
+	p.Pages = append(p.Pages, page{strconv.Itoa(n), link, class})
 }
 
 func (p *Paginator) addNextAndLast(pagesCount int) {
 	link := p.prefixLink + p.pagePath
-	p.Pages = append(p.Pages, page{"→", link + strconv.Itoa(p.actualPage+1), false})
-	p.Pages = append(p.Pages, page{"⇥", link + strconv.Itoa(pagesCount), false})
+	p.Pages = append(p.Pages, page{"→", link + strconv.Itoa(p.actualPage+1), "next"})
+	p.Pages = append(p.Pages, page{"⇥", link + strconv.Itoa(pagesCount), "last"})
 }
 
 // Paginate mount the list of links using previously configured attributes.
@@ -129,16 +135,15 @@ func (p *Paginator) Paginate() {
 }
 
 func (p Paginator) String() string {
-	html := `<ul class="paginator">`
+	list := []string{}
 	for _, pg := range p.Pages {
-		html += "<li"
-
-		if pg.Actual {
-			html += ` class="actual"`
+		classAttr := ""
+		if pg.Class != "" {
+			classAttr = fmt.Sprintf(" class=%q", pg.Class)
 		}
 
-		html += `><a href="` + pg.Link + `">` + pg.Title + "</a></li>"
+		list = append(list, fmt.Sprintf("\n\t<li%s><a href=%q>%s</a></li>", classAttr, pg.Link, pg.Title))
 	}
 
-	return html + "</ul>"
+	return fmt.Sprintf("<ul class=\"paginator\">%s\n</ul>\n", strings.Join(list, ""))
 }
