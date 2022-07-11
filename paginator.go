@@ -81,13 +81,13 @@ func (p *Paginator) calcPagesCount() int {
 
 func (p *Paginator) addFirstAndPrevious() {
 	link := p.prefixLink
-	p.Pages = append(p.Pages, page{"≪", link, false})
+	p.Pages = append(p.Pages, page{"⇤", link, false})
 
 	if p.actualPage-1 != 1 {
 		link = p.prefixLink + p.pagePath + strconv.Itoa(p.actualPage-1)
 	}
 
-	p.Pages = append(p.Pages, page{"<", link, false})
+	p.Pages = append(p.Pages, page{"←", link, false})
 }
 
 func (p *Paginator) addLinkToPageNumber(n int) {
@@ -101,8 +101,8 @@ func (p *Paginator) addLinkToPageNumber(n int) {
 
 func (p *Paginator) addNextAndLast(pagesCount int) {
 	link := p.prefixLink + p.pagePath
-	p.Pages = append(p.Pages, page{">", link + strconv.Itoa(p.actualPage+1), false})
-	p.Pages = append(p.Pages, page{"≫", link + strconv.Itoa(pagesCount), false})
+	p.Pages = append(p.Pages, page{"→", link + strconv.Itoa(p.actualPage+1), false})
+	p.Pages = append(p.Pages, page{"⇥", link + strconv.Itoa(pagesCount), false})
 }
 
 // Paginate mount the list of links using previously configured attributes.
